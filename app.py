@@ -12,10 +12,9 @@ html_code = """
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>TRƯỜNG ĐUA VỊT MAY MẮN</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f4f7fb; color: #333; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+    body { background-color: #f4f7fb; color: #333; padding: 15px; display: flex; flex-direction: column; align-items: center; }
     .container { max-width: 900px; width: 100%; }
     h1 { text-align: center; color: #ff8c00; text-shadow: 2px 2px 0px #333, -1px -1px 0 #fff; font-size: 2.2rem; margin-bottom: 20px; text-transform: uppercase; }
     .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 20px; border: 1px solid #e1e8ed; }
@@ -31,7 +30,7 @@ html_code = """
     .btn-warning { background: #f59e0b; color: white; }
     .track-title { text-align: center; font-size: 1.4rem; font-weight: bold; margin-bottom: 12px; color: #1e293b; }
     .track-container { position: relative; background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%); border-radius: 12px; border: 4px solid #0284c7; overflow: hidden; padding: 15px 80px 15px 10px; min-height: 220px; box-shadow: inset 0 0 20px rgba(0,0,0,0.15); }
-    .lane { position: relative; height: 48px; border-bottom: 2px dashed rgba(255,255,255,0.4); display: flex; align-items: center; }
+    .lane { position: relative; height: 50px; border-bottom: 2px dashed rgba(255,255,255,0.4); display: flex; align-items: center; }
     .lane:last-child { border-bottom: none; }
     .finish-line { position: absolute; right: 25px; top: 0; bottom: 0; width: 24px; background: repeating-linear-gradient(0deg, #000, #000 12px, #fff 12px, #fff 24px); border-left: 2px solid #fff; border-right: 2px solid #fff; z-index: 2; }
     .finish-banner { position: absolute; right: 5px; top: 5px; background: #dc2626; color: white; font-weight: bold; font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; z-index: 3; text-transform: uppercase; letter-spacing: 1px; }
@@ -68,7 +67,6 @@ html_code = """
         <div class="track-container" id="track">
             <div class="finish-banner">FINISH</div>
             <div class="finish-line"></div>
-            <!-- Lanes & Ducks injected by JS -->
         </div>
 
         <div class="controls">
@@ -140,8 +138,7 @@ html_code = """
                 name: name,
                 pos: 0,
                 el: duckEl,
-                finished: false,
-                finishTime: 0
+                finished: false
             });
         });
     }
@@ -186,15 +183,12 @@ html_code = """
 
             ducks.forEach(d => {
                 if (!d.finished) {
-                    const speedVariation = Math.random() * 1.8 + 0.2;
-                    const progress = Math.min((elapsed / duration) * speedVariation, 1);
+                    const progress = Math.min(elapsed / duration, 1);
+                    d.pos += (trackWidth - d.pos) * (0.04 * Math.random() + 0.01);
                     
-                    d.pos += (trackWidth - d.pos) * (0.03 * Math.random() + 0.01);
-                    
-                    if (d.pos >= trackWidth || elapsed >= duration) {
+                    if (d.pos >= trackWidth - 5 || elapsed >= duration) {
                         d.pos = trackWidth;
                         d.finished = true;
-                        d.finishTime = Date.now() - startTime;
                         finishedDucks.push(d);
                     } else {
                         allFinished = false;
@@ -203,7 +197,7 @@ html_code = """
                 }
             });
 
-            if (allFinished || elapsed >= duration + 2000) {
+            if (allFinished || elapsed >= duration + 1000) {
                 clearInterval(raceInterval);
                 isRacing = false;
                 document.getElementById('startBtn').disabled = false;
@@ -218,7 +212,7 @@ html_code = """
 
                 showResults(finishedDucks);
             }
-        }, 50);
+        }, 40);
     }
 
     function resetRace() {
@@ -247,11 +241,11 @@ html_code = """
         document.getElementById('resultModal').style.display = 'none';
     }
 
-    // Khởi tạo ban đầu
-    window.onload = setupRace;
+    // Tự động khởi tạo ngay khi trang tải xong
+    setTimeout(setupRace, 300);
 </script>
 </body>
 </html>
 """
 
-components.html(html_code, height=850, scrolling=True)
+components.html(html_code, height=900, scrolling=True)
