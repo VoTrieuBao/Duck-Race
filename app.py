@@ -9,7 +9,7 @@ st.markdown("""
     .main-title { text-align: center; color: #ff8c00; font-size: 2.2rem; font-weight: bold; margin-bottom: 20px; }
     .track-box { background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%); border-radius: 12px; padding: 15px; border: 4px solid #0284c7; }
     .lane { position: relative; height: 45px; border-bottom: 1px dashed rgba(255,255,255,0.4); display: flex; align-items: center; }
-    .duck-tag { background: white; color: #1e293b; font-weight: bold; font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; border: 1px solid #0284c7; margin-right: 5px; }
+    .duck-tag { background: white; color: #1e293b; font-weight: bold; font-size: 0.85rem; padding: 2px 8px; border-radius: 10px; border: 1px solid #0284c7; margin-right: 5px; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -31,18 +31,13 @@ with col2:
     track_placeholder = st.empty()
     
     def render_track(positions):
-        html = "<div class='track-box'>"
+        html_content = "<div class='track-box'>"
         for name, pos in positions.items():
-            indent = int(pos * 85 / 100)
-            html += f"""
-            <div class='lane'>
-                <div style='margin-left: {indent}%; transition: all 0.1s linear;'>
-                    <span class='duck-tag'>{name}</span> 🦆
-                </div>
-            </div>
-            """
-        html += "</div>"
-        track_placeholder.markdown(html, unsafe_allow_html=True)
+            indent = int(pos * 80 / 100)
+            html_content += f"<div class='lane'><div style='margin-left: {indent}%; transition: all 0.1s linear;'><span class='duck-tag'>{name}</span> 🦆</div></div>"
+        html_content += "</div>"
+        # Thêm unsafe_allow_html=True để hiển thị giao diện thay vì mã thô
+        track_placeholder.markdown(html_content, unsafe_allow_html=True)
 
     # Khởi tạo vị trí ban đầu
     positions = {name: 0 for name in names}
@@ -54,12 +49,12 @@ with col2:
             time.sleep(0.1)
             for name in names:
                 if positions[name] < 100:
-                    positions[name] += random.uniform(0.5, 3.5)
+                    positions[name] += random.uniform(0.8, 3.5)
                     if positions[name] > 100:
                         positions[name] = 100
             render_track(positions)
         
         # Xếp hạng
         sorted_results = sorted(positions.items(), key=lambda x: x[1], reverse=True)
-        st.success(f"🏆 NGHƯỜI CẦN THẮNG: **{sorted_results[0][0]}** 🎉")
+        st.success(f"🏆 NGƯỜI CHIẾN THẮNG: **{sorted_results[0][0]}** 🎉")
         st.balloons()
