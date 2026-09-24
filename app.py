@@ -8,7 +8,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# Tối ưu giao diện & CSS trang trí
+# Cấu hình giao diện CSS trang trí
 st.markdown("""
     <style>
     .main-title {
@@ -19,8 +19,6 @@ st.markdown("""
         margin-bottom: 20px;
         text-shadow: 2px 2px 0px #333, -1px -1px 0 #fff;
     }
-    
-    /* Khung đường đua nước sinh động */
     .track-box {
         position: relative;
         background: linear-gradient(180deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%);
@@ -30,8 +28,6 @@ st.markdown("""
         box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 0 8px 20px rgba(0,0,0,0.1);
         overflow: hidden;
     }
-    
-    /* Vạch đích Finish chuẩn */
     .finish-banner {
         position: absolute;
         right: 15px;
@@ -44,9 +40,7 @@ st.markdown("""
         border-radius: 4px;
         z-index: 10;
         letter-spacing: 1px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-    
     .finish-line {
         position: absolute;
         right: 35px;
@@ -58,8 +52,6 @@ st.markdown("""
         border-right: 2px solid #fff;
         z-index: 5;
     }
-    
-    /* Làn đua */
     .lane {
         position: relative;
         height: 52px;
@@ -70,16 +62,12 @@ st.markdown("""
     .lane:last-child {
         border-bottom: none;
     }
-    
-    /* Thiết kế Vịt ghép tên liền khối */
     .duck-wrapper {
         display: inline-flex;
         flex-direction: column;
         align-items: center;
-        transition: margin-left 0.1s linear;
         z-index: 6;
     }
-    
     .duck-nametag {
         background: rgba(255, 255, 255, 0.95);
         color: #0f172a;
@@ -92,7 +80,6 @@ st.markdown("""
         border: 1.5px solid #0284c7;
         margin-bottom: -4px;
     }
-    
     .duck-avatar {
         font-size: 1.8rem;
         filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3));
@@ -122,37 +109,24 @@ with col2:
     track_placeholder = st.empty()
     
     def render_track(positions):
-        # Biểu tượng các chú vịt màu sắc khác nhau
         duck_icons = ["🦆", "🐤", "🐥"]
         
-        html_content = """
-        <div class='track-box'>
-            <div class='finish-banner'>FINISH</div>
-            <div class='finish-line'></div>
-        """
-        
+        # Nối chuỗi trên 1 dòng liên tục để tránh việc Streamlit hiểu nhầm thành Code Block
+        lanes_html = ""
         for idx, (name, pos) in enumerate(positions.items()):
-            # Tính toán khoảng cách di chuyển từ 0% đến 85% đường đua
             indent = int(pos * 85 / 100)
             icon = duck_icons[idx % len(duck_icons)]
+            lanes_html += f"<div class='lane'><div class='duck-wrapper' style='margin-left: {indent}%;'><div class='duck-nametag'>{name}</div><div class='duck-avatar'>{icon}</div></div></div>"
             
-            html_content += f"""
-            <div class='lane'>
-                <div class='duck-wrapper' style='margin-left: {indent}%;'>
-                    <div class='duck-nametag'>{name}</div>
-                    <div class='duck-avatar'>{icon}</div>
-                </div>
-            </div>
-            """
-            
-        html_content += "</div>"
-        track_placeholder.markdown(html_content, unsafe_allow_html=True)
+        full_html = f"<div class='track-box'><div class='finish-banner'>FINISH</div><div class='finish-line'></div>{lanes_html}</div>"
+        
+        track_placeholder.markdown(full_html, unsafe_allow_html=True)
 
     # Khởi tạo vị trí ban đầu
     positions = {name: 0 for name in names}
     render_track(positions)
 
-    # Xử lý cuộc đua khi bấm nút
+    # Xử lý cuộc đua
     if start_btn and names:
         steps = int(race_time * 10)
         finished_order = []
@@ -161,7 +135,6 @@ with col2:
             time.sleep(0.1)
             for name in names:
                 if positions[name] < 100:
-                    # Tạo độ tăng ngẫu nhiên cho từng chú vịt
                     positions[name] += random.uniform(0.8, 3.8)
                     if positions[name] >= 100:
                         positions[name] = 100
@@ -169,7 +142,6 @@ with col2:
                             finished_order.append(name)
             render_track(positions)
         
-        # Bổ sung các vịt chưa về đích vào bảng xếp hạng
         for name, _ in sorted(positions.items(), key=lambda x: x[1], reverse=True):
             if name not in finished_order:
                 finished_order.append(name)
