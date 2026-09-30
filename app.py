@@ -8,17 +8,39 @@ st.set_page_config(
     layout="wide"
 )
 
-# Cấu hình giao diện CSS trang trí
+# Cấu hình giao diện CSS trang trí chữ 3D & đường đua
 st.markdown("""
     <style>
-    .main-title {
+    /* Tiêu đề 3D chữ to, bóng bẩy và màu sắc rực rỡ */
+    .super-title-container {
         text-align: center;
-        color: #ff8c00;
-        font-size: 2.3rem;
-        font-weight: 800;
-        margin-bottom: 20px;
-        text-shadow: 2px 2px 0px #333, -1px -1px 0 #fff;
+        margin-top: 10px;
+        margin-bottom: 25px;
     }
+    
+    .super-title {
+        display: inline-block;
+        font-size: 3.2rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        background: linear-gradient(180deg, #ffe066 0%, #ff922b 50%, #d9480f 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -webkit-text-stroke: 1.5px #ffffff;
+        filter: drop-shadow(0 4px 0px #b02a00) 
+                drop-shadow(0 7px 2px #5c1400) 
+                drop-shadow(0 12px 15px rgba(0, 0, 0, 0.4));
+        line-height: 1.2;
+    }
+
+    .duck-icon-left, .duck-icon-right {
+        font-size: 2.8rem;
+        vertical-align: middle;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    }
+
+    /* Khung đường đua nước */
     .track-box {
         position: relative;
         background: linear-gradient(180deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%);
@@ -28,6 +50,7 @@ st.markdown("""
         box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 0 8px 20px rgba(0,0,0,0.1);
         overflow: hidden;
     }
+    
     .finish-banner {
         position: absolute;
         right: 15px;
@@ -41,6 +64,7 @@ st.markdown("""
         z-index: 10;
         letter-spacing: 1px;
     }
+    
     .finish-line {
         position: absolute;
         right: 35px;
@@ -52,6 +76,7 @@ st.markdown("""
         border-right: 2px solid #fff;
         z-index: 5;
     }
+    
     .lane {
         position: relative;
         height: 52px;
@@ -62,17 +87,19 @@ st.markdown("""
     .lane:last-child {
         border-bottom: none;
     }
+    
     .duck-wrapper {
         display: inline-flex;
         flex-direction: column;
         align-items: center;
         z-index: 6;
     }
+    
     .duck-nametag {
         background: rgba(255, 255, 255, 0.95);
         color: #0f172a;
         font-weight: bold;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         padding: 1px 8px;
         border-radius: 12px;
         white-space: nowrap;
@@ -80,6 +107,7 @@ st.markdown("""
         border: 1.5px solid #0284c7;
         margin-bottom: -4px;
     }
+    
     .duck-avatar {
         font-size: 1.8rem;
         filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3));
@@ -87,7 +115,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='main-title'>🦆 TRƯỜNG ĐUA VỊT MAY MẮN 🦆</h1>", unsafe_allow_html=True)
+# Hiển thị tiêu đề siêu nổi bật
+st.markdown("""
+<div class="super-title-container">
+    <span class="duck-icon-left">🦆</span>
+    <span class="super-title">TRƯỜNG ĐUA VỊT MAY MẮN</span>
+    <span class="duck-icon-right">🦆</span>
+</div>
+""", unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 2])
 
@@ -110,8 +145,6 @@ with col2:
     
     def render_track(positions):
         duck_icons = ["🦆", "🐤", "🐥"]
-        
-        # Nối chuỗi trên 1 dòng liên tục để tránh việc Streamlit hiểu nhầm thành Code Block
         lanes_html = ""
         for idx, (name, pos) in enumerate(positions.items()):
             indent = int(pos * 85 / 100)
@@ -119,7 +152,6 @@ with col2:
             lanes_html += f"<div class='lane'><div class='duck-wrapper' style='margin-left: {indent}%;'><div class='duck-nametag'>{name}</div><div class='duck-avatar'>{icon}</div></div></div>"
             
         full_html = f"<div class='track-box'><div class='finish-banner'>FINISH</div><div class='finish-line'></div>{lanes_html}</div>"
-        
         track_placeholder.markdown(full_html, unsafe_allow_html=True)
 
     # Khởi tạo vị trí ban đầu
