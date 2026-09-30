@@ -3,7 +3,7 @@ import time
 import random
 
 st.set_page_config(
-    page_title="TRƯỜNG ĐUA VỊT MAY MẮN",
+    page_title="NHỮNG CON VỊT KHÔNG MAY MẮN",
     page_icon="🦆",
     layout="wide"
 )
@@ -20,7 +20,7 @@ st.markdown("""
     
     .super-title {
         display: inline-block;
-        font-size: 3.2rem;
+        font-size: 2.8rem;
         font-weight: 900;
         text-transform: uppercase;
         letter-spacing: 2px;
@@ -35,7 +35,7 @@ st.markdown("""
     }
 
     .duck-icon-left, .duck-icon-right {
-        font-size: 2.8rem;
+        font-size: 2.5rem;
         vertical-align: middle;
         filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
     }
@@ -115,11 +115,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Hiển thị tiêu đề siêu nổi bật
+# Hiển thị tiêu đề mới
 st.markdown("""
 <div class="super-title-container">
     <span class="duck-icon-left">🦆</span>
-    <span class="super-title">TRƯỜNG ĐUA VỊT MAY MẮN</span>
+    <span class="super-title">NHỮNG CON VỊT KHÔNG MAY MẮN</span>
     <span class="duck-icon-right">🦆</span>
 </div>
 """, unsafe_allow_html=True)
