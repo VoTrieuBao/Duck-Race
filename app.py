@@ -8,12 +8,15 @@ st.set_page_config(
     layout="wide"
 )
 
-# Cấu hình giao diện CSS trang trí chữ 3D & đường đua
+# Cấu hình giao diện CSS trang trí chữ 3D & hình ảnh vịt 3D chân thực
 st.markdown("""
     <style>
     /* Tiêu đề 3D chữ to, bóng bẩy và màu sắc rực rỡ */
     .super-title-container {
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
         margin-top: 10px;
         margin-bottom: 25px;
     }
@@ -34,10 +37,34 @@ st.markdown("""
         line-height: 1.2;
     }
 
-    .duck-icon-left, .duck-icon-right {
-        font-size: 2.5rem;
-        vertical-align: middle;
-        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    /* Hiệu ứng bồng bềnh như nổi trên nước cho 2 chú vịt */
+    .duck-3d-left {
+        width: 75px;
+        height: 75px;
+        filter: drop-shadow(0 6px 8px rgba(0,0,0,0.3));
+        animation: bobDuck 2.4s ease-in-out infinite alternate;
+    }
+
+    .duck-3d-right {
+        width: 75px;
+        height: 75px;
+        filter: drop-shadow(0 6px 8px rgba(0,0,0,0.3));
+        transform: scaleX(-1); /* Lật gương để vịt hướng mặt vào tiêu đề */
+        animation: bobDuck 2.4s ease-in-out infinite alternate -1.2s;
+    }
+
+    @keyframes bobDuck {
+        0% { transform: translateY(0px) rotate(0deg); }
+        100% { transform: translateY(-7px) rotate(3deg); }
+    }
+
+    .duck-3d-right {
+        animation-name: bobDuckRight;
+    }
+
+    @keyframes bobDuckRight {
+        0% { transform: scaleX(-1) translateY(0px) rotate(0deg); }
+        100% { transform: scaleX(-1) translateY(-7px) rotate(3deg); }
     }
 
     /* Khung đường đua nước */
@@ -115,12 +142,61 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Hiển thị tiêu đề mới
-st.markdown("""
+# SVG chú vịt 3D đổ bóng chân thực
+duck_svg_code = """
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- Gradient đổ bóng thân 3D -->
+        <radialGradient id="body3D" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#fff275"/>
+            <stop offset="45%" stop-color="#ffb703"/>
+            <stop offset="85%" stop-color="#fb8500"/>
+            <stop offset="100%" stop-color="#c95700"/>
+        </radialGradient>
+        <!-- Gradient đầu vịt 3D -->
+        <radialGradient id="head3D" cx="35%" cy="30%" r="60%">
+            <stop offset="0%" stop-color="#fff69b"/>
+            <stop offset="50%" stop-color="#ffc107"/>
+            <stop offset="90%" stop-color="#fb8500"/>
+            <stop offset="100%" stop-color="#b04f00"/>
+        </radialGradient>
+        <!-- Gradient cánh vịt -->
+        <linearGradient id="wing3D" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffea65"/>
+            <stop offset="60%" stop-color="#ffaa00"/>
+            <stop offset="100%" stop-color="#d65a00"/>
+        </linearGradient>
+        <!-- Gradient mỏ vịt -->
+        <linearGradient id="beak3D" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff9e00"/>
+            <stop offset="60%" stop-color="#e85d04"/>
+            <stop offset="100%" stop-color="#9d0208"/>
+        </linearGradient>
+    </defs>
+    <!-- Thân vịt 3D -->
+    <path d="M 22 55 C 10 55 12 76 28 80 C 45 83 75 83 82 66 C 85 58 78 50 68 50 C 58 50 48 54 36 54 C 28 54 25 55 22 55 Z" fill="url(#body3D)"/>
+    <!-- Cánh vịt nổi khối -->
+    <path d="M 32 58 C 22 58 20 72 32 75 C 44 77 60 72 58 63 C 57 58 42 58 32 58 Z" fill="url(#wing3D)" opacity="0.95"/>
+    <path d="M 35 60 C 26 60 25 68 33 70 C 43 72 52 69 50 64 C 48 60 41 60 35 60 Z" fill="#fff" opacity="0.2"/>
+    <!-- Đầu vịt 3D -->
+    <circle cx="63" cy="38" r="21" fill="url(#head3D)"/>
+    <!-- Vệt bóng sáng bóng bẩy trên trán (Highlight) -->
+    <ellipse cx="58" cy="27" rx="7" ry="4" fill="#ffffff" opacity="0.55" transform="rotate(-20 58 27)"/>
+    <!-- Mỏ vịt 3D -->
+    <path d="M 76 38 C 88 38 95 44 87 49 C 78 52 74 46 72 44 Z" fill="url(#beak3D)"/>
+    <!-- Mắt vịt to tròn đen bóng có điểm sáng -->
+    <circle cx="68" cy="33" r="4.5" fill="#1e293b"/>
+    <circle cx="69.5" cy="31.5" r="1.6" fill="#ffffff"/>
+    <circle cx="66.5" cy="34.5" r="0.8" fill="#ffffff"/>
+</svg>
+"""
+
+# Hiển thị tiêu đề với 2 vịt 3D chất lượng cao
+st.markdown(f"""
 <div class="super-title-container">
-    <span class="duck-icon-left">🦆</span>
+    <div class="duck-3d-left">{duck_svg_code}</div>
     <span class="super-title">NHỮNG CON VỊT KHÔNG MAY MẮN</span>
-    <span class="duck-icon-right">🦆</span>
+    <div class="duck-3d-right">{duck_svg_code}</div>
 </div>
 """, unsafe_allow_html=True)
 
